@@ -26,3 +26,6 @@ jobs:
         yarn tsc
         yarn build:all
         yarn test:all
+    
+    - name: build image
+      run: yarn build-image --tag oleo-backstage:1.0.0
