@@ -8588,7 +8588,7 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-"app@link:packages/app":
+"app@file:packages/app":
   version "0.0.0"
   dependencies:
     "@backstage/app-defaults" "^1.4.2"

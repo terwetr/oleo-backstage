@@ -17,7 +17,7 @@ jobs:
 
     - name: install yarn, check version
       run: |
-        apt update && apt install yarn
+        npm install --global yarn
         yarn --version
 
     - name: yarn install, build, and test
