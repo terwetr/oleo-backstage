@@ -15,6 +15,11 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
 
+    - name: install yarn, check version
+      run: |
+        apt update && apt install yarn
+        yarn --version
+
     - name: yarn install, build, and test
       run: |
         yarn install
