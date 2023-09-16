@@ -133,7 +133,7 @@ spec:
     spec:
       containers:
         - name: backstage
-          image: backstage:1.0.0
+          image: oleo-backstage:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

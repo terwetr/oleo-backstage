@@ -38,20 +38,20 @@ jobs:
       run: |
         export SHELL=/bin/bash
         eval $(minikube -p minikube docker-env)
-        docker build -f ./packages/backend/Dockerfile -t local/example .
+        # docker build -f ./packages/backend/Dockerfile -t local/example .
         echo -n "verifying images:"
         docker images
 
     - name: render K8s manifests
-      run: envsubst < ./deploy-config/everything.template.yml > everything.yml
+      run: envsubst < ./deploy-config/everything.template.yaml > everything.yaml
 
     - name: Deploy to minikube
       run:
-        kubectl apply -f everything.yml.yaml
+        kubectl apply -f everything.yaml
 
     - name: Test service URLs
       run: |
         minikube service list
-        minikube service example --url
+        minikube service backstage --url
         echo "------------------opening the service------------------"
-        curl $(minikube service example --url)
+        curl $(minikube service backstage --url)
