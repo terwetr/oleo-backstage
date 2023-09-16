@@ -29,3 +29,29 @@ jobs:
     
     - name: build image
       run: yarn build-image --tag oleo-backstage:1.0.0
+
+    - name: start minikube
+      id: minikube
+      uses: medyagh/setup-minikube@master
+    
+    - name: Build image
+      run: |
+        export SHELL=/bin/bash
+        eval $(minikube -p minikube docker-env)
+        docker build -f ./packages/backend/Dockerfile -t local/example .
+        echo -n "verifying images:"
+        docker images
+
+    - name: render K8s manifests
+      run: envsubst < ./deploy-config/everything.template.yml > everything.yml
+
+    - name: Deploy to minikube
+      run:
+        kubectl apply -f everything.yml.yaml
+
+    - name: Test service URLs
+      run: |
+        minikube service list
+        minikube service example --url
+        echo "------------------opening the service------------------"
+        curl $(minikube service example --url)
