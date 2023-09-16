@@ -52,6 +52,6 @@ jobs:
     - name: Test service URLs
       run: |
         minikube service list
-        minikube service backstage --url
+        minikube service backstage --url -n backstage
         echo "------------------opening the service------------------"
-        curl $(minikube service backstage --url)
+        curl $(minikube service backstage --url -n backstage)
