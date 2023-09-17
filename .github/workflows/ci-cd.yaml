@@ -38,7 +38,7 @@ jobs:
       run: |
         export SHELL=/bin/bash
         eval $(minikube -p minikube docker-env)
-        # docker build -f ./packages/backend/Dockerfile -t local/example .
+        docker build -f ./packages/backend/Dockerfile -t oleo-backstage:1.0.0 .
         echo -n "verifying images:"
         docker images
 
@@ -48,6 +48,11 @@ jobs:
     - name: Deploy to minikube
       run:
         kubectl apply -f everything.yaml
+
+    - name: Check deployment
+      run: |
+        k get deployments -n backstage
+        k get pods -n backstage
 
     - name: Test service URLs
       run: |
