@@ -27,8 +27,8 @@ jobs:
         yarn build:all
         yarn test:all
     
-    - name: build image
-      run: yarn build-image --tag oleo-backstage:1.0.0
+    # - name: build image
+    #   run: yarn build-image --tag oleo-backstage:1.0.0
 
     - name: start minikube
       id: minikube
@@ -51,8 +51,8 @@ jobs:
 
     - name: Check deployment
       run: |
-        k get deployments -n backstage
-        k get pods -n backstage
+        kubectl get deployments -n backstage
+        kubectl get pods -n backstage
 
     - name: Test service URLs
       run: |
