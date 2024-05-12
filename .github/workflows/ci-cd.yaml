@@ -1,62 +1,55 @@
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
-    - name: install yarn, check version
-      run: |
-        npm install --global yarn
-        yarn --version
+      - name: Install yarn, check version
+        run: |
+          npm install --global yarn
+          yarn --version
 
-    - name: yarn install, build, and test
-      run: |
-        yarn install
-        yarn tsc
-        yarn build:all
-        yarn test:all
-    
-    # - name: build image
-    #   run: yarn build-image --tag oleo-backstage:1.0.0
+      - name: Install, build, and test Backstage
+        run: |
+          yarn install
+          yarn tsc
+          yarn build:all
+          yarn test:all
 
-    - name: start minikube
-      id: minikube
-      uses: medyagh/setup-minikube@master
-    
-    - name: Build image
-      run: |
-        export SHELL=/bin/bash
-        eval $(minikube -p minikube docker-env)
-        docker build -f ./packages/backend/Dockerfile -t oleo-backstage:1.0.0 .
-        echo -n "verifying images:"
-        docker images
+      - name: Start minikube
+        id: minikube
+        uses: medyagh/setup-minikube@master
 
-    - name: render K8s manifests
-      run: envsubst < ./deploy-config/everything.template.yaml > everything.yaml
+      - name: Build image
+        run: |
+          export SHELL=/bin/bash
+          eval $(minikube -p minikube docker-env)
+          docker build -f ./Dockerfile -t oleo-backstage:0.1.0 .
+          echo -n "verifying images:"
+          docker images
 
-    - name: Deploy to minikube
-      run:
-        kubectl apply -f everything.yaml
+      - name: Deploy to minikube
+        run: kubectl apply -f everything.yaml
 
-    - name: Check deployment
-      run: |
-        kubectl get deployments -n backstage
-        kubectl get pods -n backstage
+      - name: Check deployment
+        run: |
+          kubectl get deployments -n backstage
+          kubectl get pods -n backstage
 
-    - name: Test service URLs
-      run: |
-        minikube service list
-        minikube service backstage --url -n backstage
-        echo "------------------opening the service------------------"
-        curl $(minikube service backstage --url -n backstage)
+      - name: Test service URLs
+        run: |
+          minikube service list
+          minikube service backstage --url -n backstage
+          echo "------------------opening the service------------------"
+          curl $(minikube service backstage --url -n backstage)

@@ -76,8 +76,15 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:13.2-alpine
+          image: postgres:15-alpine
           imagePullPolicy: 'IfNotPresent'
+          resources:
+            limits:
+              cpu: 50m
+              memory: 100Mi
+            requests:
+              cpu: 25m
+              memory: 10Mi
           ports:
             - containerPort: 5432
           envFrom:
@@ -86,6 +93,7 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgresdb
+              subPath: data
       volumes:
         - name: postgresdb
           persistentVolumeClaim:
@@ -133,8 +141,15 @@ spec:
     spec:
       containers:
         - name: backstage
-          image: oleo-backstage:1.0.0
+          image: oleo-backstage:0.1.0
           imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 50m
+              memory: 100Mi
+            requests:
+              cpu: 25m
+              memory: 10Mi
           ports:
             - name: http
               containerPort: 7007
