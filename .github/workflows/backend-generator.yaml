@@ -1,0 +1,46 @@
+on:
+  workflow_dispatch:
+    inputs:
+      plugin-id:
+        type: string
+        description: Plugin ID (e.g., "my-example" >> "@internal/backstage-plugin-my-example-backend")
+
+permissions: write-all
+
+env:
+  BRANCH: feature/new-backend-plugin
+  COMMIT_MESSAGE: 'feat: generate new backend plugin via GHA'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install yarn, check version
+        run: |
+          npm install --global yarn
+          yarn --version
+
+      - name: Install dependencies
+        run: |
+          yarn install
+
+      - name: Generate backend plugin
+        run: |
+          npx backstage-cli new --scope internal --select backend-plugin --option id=${{ github.events.inputs.plugin-id }}
+
+      - name: Create Branch
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout -b ${{ env.BRANCH }}-${{ github.run_id }}
+          git add .
+          git commit -m "${{ env.COMMIT_MESSAGE }} (${{ github.events.inputs.plugin-id }})"
+          git push origin ${{ env.BRANCH }}-${{ github.run_id }}
