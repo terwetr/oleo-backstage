@@ -39,8 +39,11 @@ jobs:
           echo -n "verifying images:"
           docker images
 
+      - name: render K8s manifests
+        run: envsubst < ./deploy-config/everything.template.yaml > everything.yaml
+
       - name: Deploy to minikube
-        run: kubectl apply -f ./deploy-config/everything.template.yaml
+        run: kubectl apply -f everything.yaml
 
       - name: Check deployment
         run: |
