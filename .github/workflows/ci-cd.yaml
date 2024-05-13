@@ -40,7 +40,7 @@ jobs:
           docker images
 
       - name: Deploy to minikube
-        run: kubectl apply -f ./deploy-config/everything.yaml
+        run: kubectl apply -f ./deploy-config/everything.template.yaml
 
       - name: Check deployment
         run: |
