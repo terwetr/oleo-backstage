@@ -4,6 +4,9 @@ on:
       plugin-id:
         type: string
         description: Plugin ID (e.g., "my-example" >> "@internal/backstage-plugin-my-example-backend")
+      include-db:
+        type: boolean
+        default: false
 
 permissions: write-all
 
